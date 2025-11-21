@@ -159,4 +159,36 @@ class Taruna extends BaseController
 
         return redirect()->to('/pasukan')->with('success', 'Taruna berhasil direkrut. Akun Login: ' . $this->request->getPost('nis') . ' / Pass: 123456');
     }
+    public function delete($id)
+    {
+        $model = new TarunaModel();
+        $db = \Config\Database::connect();
+
+        // 1. Cari Data Taruna
+        $taruna = $model->find($id);
+        
+        if (!$taruna) {
+            return redirect()->back()->with('error', 'Data personel tidak ditemukan.');
+        }
+
+        $userID = $taruna->user_id; // Simpan ID User untuk dihapus nanti
+
+        // 2. Eksekusi Penghapusan (Atomic Transaction)
+        $db->transStart();
+
+        // A. Hapus Profil Taruna
+        // (Log Disiplin & Tahfidz akan otomatis terhapus karena CASCADE di database)
+        $model->delete($id);
+
+        // B. Hapus Akun Login (Users)
+        $db->table('users')->where('id', $userID)->delete();
+
+        $db->transComplete();
+
+        if ($db->transStatus() === FALSE) {
+            return redirect()->back()->with('error', 'Gagal menghapus data. Sistem Error.');
+        }
+
+        return redirect()->back()->with('success', 'Data Pasukan & Akun Login berhasil dihapus permanen.');
+    }
 }

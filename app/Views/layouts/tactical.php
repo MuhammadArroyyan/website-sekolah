@@ -48,24 +48,77 @@
         </div>
         
         <nav class="flex-1 p-4 space-y-2">
-            <?php if(session()->get('role') == 'komandan' || session()->get('role') == 'admin'): ?>
-                <a href="/dashboard" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                    Dashboard
-                </a>            
-                <div class="pt-2 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest">Master Data</div>
-                <a href="/pasukan" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                    Data Pasukan
+            
+            <?php 
+                $uri = uri_string();
+                $role = session()->get('role'); // Ambil role user
+                
+                // Style Definitions
+                $active   = 'bg-radar/10 text-radar border-l-4 border-radar font-bold shadow-[0_0_10px_rgba(6,182,212,0.1)]';
+                $inactive = 'text-slate-400 hover:bg-slate-700 hover:text-white transition border-l-4 border-transparent';
+            ?>
+
+            <?php if($role == 'komandan' || $role == 'admin'): ?>
+                
+                <a href="/dashboard" class="block p-3 rounded <?= str_contains($uri, 'dashboard') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        Dashboard
+                    </span>
                 </a>
-                <a href="/taruna/create" class="block p-3 rounded hover:bg-slate-700 text-green-400 transition text-xs font-bold border border-dashed border-slate-700 mb-2">
-                    + Rekrut Baru
+
+                <div class="pt-4 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest font-bold">Command & Control</div>
+                
+                <a href="/pasukan" class="block p-3 rounded <?= str_contains($uri, 'pasukan') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Data Pasukan
+                    </span>
                 </a>
-                <a href="/kelas" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                    Manajemen Kelas
+
+                <a href="/taruna/create" class="block p-3 rounded <?= str_contains($uri, 'taruna/create') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        Rekrut Baru
+                    </span>
                 </a>
+
+                <a href="/kelas" class="block p-3 rounded <?= str_contains($uri, 'kelas') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Manajemen Peleton
+                    </span>
+                </a>
+
             <?php endif; ?>
-                <a href="/my-dossier" class="block p-3 rounded bg-radar/10 text-radar border-l-4 border-radar">
-                    My Dossier
+
+
+            <?php if($role == 'taruna'): ?>
+                
+                <a href="/my-dossier" class="block p-3 rounded <?= str_contains($uri, 'my-dossier') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        My Dossier
+                    </span>
                 </a>
+
+            <?php endif; ?>
+
+
+            <div class="pt-4 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest font-bold">Stats Center</div>
+
+            <a href="/leaderboard" class="block p-3 rounded <?= str_contains($uri, 'leaderboard') ? $active : $inactive ?>">
+                <span class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    Leaderboard
+                </span>
+            </a>
+            <a href="/change-password" class="block p-3 rounded <?= str_contains($uri, 'change-password') ? $active : $inactive ?>">
+                <span class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Ganti Password
+                </span>
+            </a>
         </nav>
 
         <div class="p-4 border-t border-slate-700">

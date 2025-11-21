@@ -39,7 +39,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php foreach($pasukan as $p): ?>
                 <div class="glass-panel p-1 rounded-lg relative group hover:-translate-y-1 transition duration-300">
-                    <div class="bg-slate-900/90 p-5 relative z-10 rounded h-full flex flex-col items-center text-center">
+                    <?php if(session()->get('role') == 'komandan' || session()->get('role') == 'admin'): ?>
+                        <form action="/taruna/delete/<?= $p->id ?>" method="post" onsubmit="return confirm('PERINGATAN TINGKAT TINGGI:\n\nAnda akan menghapus data: <?= $p->full_name ?>\n\nTindakan ini akan menghapus:\n1. Profil Biodata\n2. Akun Login\n3. Riwayat Poin & Hafalan\n\nData tidak dapat dikembalikan. Lanjutkan?')" class="absolute top-3 left-3 z-20 opacity-0 group-hover:opacity-100 transition duration-300">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="text-slate-600 hover:text-red-500 bg-slate-900/80 p-1.5 rounded-full hover:bg-red-500/20 transition border border-transparent hover:border-red-500" title="Hapus Personel">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                <div class="bg-slate-900/90 p-5 relative z-10 rounded h-full flex flex-col items-center text-center">
                         
                         <div class="absolute top-3 right-3">
                             <div class="w-2 h-2 rounded-full <?= $p->total_points > 150 ? 'bg-green-500 animate-pulse' : ($p->total_points < 100 ? 'bg-red-500' : 'bg-blue-500') ?>"></div>

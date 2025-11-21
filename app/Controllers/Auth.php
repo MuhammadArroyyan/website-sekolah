@@ -58,4 +58,44 @@ class Auth extends BaseController
         session()->destroy();
         return redirect()->to('/login');
     }
+    public function changePassword()
+    {
+        $data = ['title' => 'Update Security Credentials'];
+        // Kita gunakan layout tactical agar tetap menyatu dengan dashboard
+        return view('auth/change_password', $data);
+    }
+
+    // 2. Proses Update
+    public function updatePassword()
+    {
+        // A. Validasi Input
+        if (!$this->validate([
+            'old_password'  => 'required',
+            'new_password'  => 'required|min_length[6]',
+            'conf_password' => 'required|matches[new_password]'
+        ])) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $db = \Config\Database::connect();
+        $userID = session()->get('user_id');
+
+        // B. Ambil Data User Saat Ini
+        $user = $db->table('users')->where('id', $userID)->get()->getRow();
+
+        // C. Cek Password Lama
+        if (!password_verify($this->request->getPost('old_password'), $user->password_hash)) {
+            return redirect()->back()->with('error', 'Password Lama SALAH. Akses ditolak.');
+        }
+
+        // D. Update Password Baru (Hash)
+        $newHash = password_hash($this->request->getPost('new_password'), PASSWORD_DEFAULT);
+        
+        $db->table('users')->where('id', $userID)->update([
+            'password_hash' => $newHash,
+            'updated_at'    => date('Y-m-d H:i:s')
+        ]);
+
+        return redirect()->to('/dashboard')->with('success', 'Password berhasil diperbarui. Akun Anda aman.');
+    }
 }

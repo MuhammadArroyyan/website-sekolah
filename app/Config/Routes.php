@@ -50,4 +50,12 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // Manajemen Siswa Baru
     $routes->get('taruna/create', 'Taruna::create');
     $routes->post('taruna/store', 'Taruna::store');
+    $routes->get('/leaderboard', 'Leaderboard::index');
+
+    // FITUR GANTI PASSWORD
+    $routes->get('/change-password', 'Auth::changePassword');
+    $routes->post('/auth/updatePassword', 'Auth::updatePassword');
+
+    // Hapus Pasukan
+    $routes->delete('taruna/delete/(:num)', 'Taruna::delete/$1');
 });

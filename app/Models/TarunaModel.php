@@ -75,4 +75,32 @@ class TarunaModel extends Model
                     ->orderBy('full_name', 'ASC')
                     ->paginate(12, 'pasukan');
     }
+    /**
+     * --------------------------------------------------------------------------
+     * LEADERBOARD INTEL
+     * --------------------------------------------------------------------------
+     * Mengambil data semua taruna + Hitungan Juz + Nama Kelas
+     * Diurutkan berdasarkan Poin Tertinggi -> Lalu Juz Terbanyak
+     */
+    public function getLeaderboard()
+    {
+        $builder = $this->builder();
+        $builder->select('taruna.*, classes.name as class_name');
+        
+        // Subquery untuk menghitung jumlah juz 'selesai' per siswa
+        // Ini cara efisien agar tidak perlu looping query berulang-ulang
+        $builder->select('(SELECT COUNT(DISTINCT juz) FROM tahfidz_logs WHERE tahfidz_logs.taruna_id = taruna.id AND status = "selesai") as juz_completed');
+        
+        $builder->join('classes', 'classes.id = taruna.class_id', 'left');
+        
+        // URUTAN RANKING:
+        // 1. Poin Disiplin Tertinggi
+        // 2. Jika poin sama, lihat Hafalan Terbanyak
+        // 3. Jika masih sama, urutkan Nama (A-Z)
+        $builder->orderBy('total_points', 'DESC');
+        $builder->orderBy('juz_completed', 'DESC');
+        $builder->orderBy('full_name', 'ASC');
+
+        return $builder->get()->getResult(); // Return sebagai Array of Objects
+    }
 }

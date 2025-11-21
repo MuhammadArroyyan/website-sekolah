@@ -1,0 +1,14 @@
+# Security
+.env
+.env.test
+.env.production
+
+# Dependencies
+/vendor
+/node_modules
+
+# Logs & Cache
+/writable/logs
+/writable/cache
+/writable/session
+/writable/debugbar

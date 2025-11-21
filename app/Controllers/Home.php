@@ -4,8 +4,9 @@ namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function index(): string
+    public function index()
     {
-        return view('welcome_message');
+        // Panggil View Landing Page
+        return view('landing_page');
     }
 }

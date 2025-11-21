@@ -75,10 +75,8 @@
                 <?php endforeach; ?>
         </div>
 
-        <div class="mt-8 flex justify-center">
-            <div class="glass-panel px-4 py-2 rounded-full inline-block">
-                <?= $pager->links('pasukan', 'tactical_full') ?>
-            </div>
+        <div class="mt-8">
+             <?= $pager->links('pasukan', 'tactical_full') ?>
         </div>
 
     <?php else: ?>

@@ -9,46 +9,37 @@ class Tahfidz extends BaseController
 {
     public function store()
     {
-        // 1. VALIDASI INPUT
-        if (!$this->validate([
-            'taruna_id' => 'required|integer',
-            'juz'       => 'required|integer|greater_than[0]|less_than[31]',
-            'surah'     => 'required',
-            'status'    => 'required|in_list[lancar,mengulang,selesai]',
-        ])) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
+        // 1. DEBUG: Cek apakah data terkirim?
+        // dd($this->request->getPost()); // Hapus komentar ini jika ingin cek data mentah
 
-        // 2. KONEKSI LANGSUNG KE MARKAS DATABASE
+        // 2. AMBIL ID USTADZ
+        $ustadzID = session()->get('user_id');
+        // Fallback: Jika session hilang/error, pakai ID 1 (Admin default)
+        if (!$ustadzID) $ustadzID = 1;
+
         $db = \Config\Database::connect();
-        
-        // Ambil ID Ustadz (Sementara 1)
-        $ustadzID = 1; 
 
-        // 3. EKSEKUSI SIMPAN (METODE QUERY BUILDER)
         try {
-            // Kita tembak langsung ke tabel 'tahfidz_logs'
-            // Cara ini TIDAK PEDULI dengan file Model, jadi pasti berhasil.
-            $db->table('tahfidz_logs')->insert([
+            // 3. EKSEKUSI MANUAL (BYPASS MODEL)
+            // Kita isi semua kolom secara manual agar aman
+            $data = [
                 'taruna_id'   => $this->request->getPost('taruna_id'),
                 'juz'         => $this->request->getPost('juz'),
                 'surah'       => $this->request->getPost('surah'),
-                'verses'      => $this->request->getPost('verses'), 
+                'verses'      => $this->request->getPost('verses') ?? 'Full', // Default jika kosong
                 'status'      => $this->request->getPost('status'),
-                'notes'       => $this->request->getPost('notes'),
+                'notes'       => $this->request->getPost('notes') ?? '-',     // PENTING: Jangan biarkan NULL
                 'ustadz_id'   => $ustadzID,
-                'recorded_at' => date('Y-m-d H:i:s') // Kita isi waktu manual
-            ]);
+                'recorded_at' => date('Y-m-d H:i:s')
+            ];
 
-            // SUKSES: Kembali ke halaman profil
-            return redirect()->back()->with('success', 'Data Hafalan Juz ' . $this->request->getPost('juz') . ' berhasil diperbarui.');
+            $db->table('tahfidz_logs')->insert($data);
+
+            return redirect()->back()->with('success', 'Hafalan berhasil disimpan.');
 
         } catch (\Throwable $e) {
-            // ERROR: Catat di log sistem, jangan tampilkan layar putih seram
-            log_message('error', '[TAHFIDZ FAIL] ' . $e->getMessage());
-            
-            // Tampilkan pesan error manusiawi
-            return redirect()->back()->with('error', 'Sistem gagal menyimpan data. (Error Code: DB-INSERT-FAIL)');
+            // --- MODE DEBUG: TAMPILKAN ERROR DI LAYAR ---
+            die("<h1>TAHFIDZ ERROR</h1><hr>Pesan: " . $e->getMessage() . "<br>SQL Error? Cek tipe data di database.");
         }
     }
 }

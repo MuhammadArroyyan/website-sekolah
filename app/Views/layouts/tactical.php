@@ -48,27 +48,40 @@
         </div>
         
         <nav class="flex-1 p-4 space-y-2">
-            <a href="#" class="block p-3 rounded bg-radar/10 text-radar border-l-4 border-radar">
-                Dashboard
-            </a>
-            <a href="/pasukan" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                Data Pasukan
-            </a>
-            <a href="#" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                Akademik & Tahfidz
-            </a>
-            <a href="#" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
-                Kedisiplinan
-            </a>
+            <?php if(session()->get('role') == 'komandan' || session()->get('role') == 'admin'): ?>
+                <a href="/dashboard" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
+                    Dashboard
+                </a>            
+                <div class="pt-2 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest">Master Data</div>
+                <a href="/pasukan" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
+                    Data Pasukan
+                </a>
+                <a href="/taruna/create" class="block p-3 rounded hover:bg-slate-700 text-green-400 transition text-xs font-bold border border-dashed border-slate-700 mb-2">
+                    + Rekrut Baru
+                </a>
+                <a href="/kelas" class="block p-3 rounded hover:bg-slate-700 text-slate-400 transition">
+                    Manajemen Kelas
+                </a>
+            <?php endif; ?>
+                <a href="/my-dossier" class="block p-3 rounded bg-radar/10 text-radar border-l-4 border-radar">
+                    My Dossier
+                </a>
         </nav>
 
         <div class="p-4 border-t border-slate-700">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded bg-gold/20 border border-gold flex items-center justify-center text-gold font-bold">A</div>
-                <div>
-                    <p class="text-xs text-slate-400">Logged in as</p>
-                    <p class="text-sm font-bold text-white">Komandan</p>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-gold/20 border border-gold flex items-center justify-center text-gold font-bold">
+                        <?= strtoupper(substr(session()->get('username') ?? 'A', 0, 1)) ?>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Operator</p>
+                        <p class="text-sm font-bold text-white capitalize"><?= session()->get('username') ?? 'Guest' ?></p>
+                    </div>
                 </div>
+                <a href="/logout" class="text-slate-500 hover:text-alert transition" title="Logout">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </a>
             </div>
         </div>
     </div>

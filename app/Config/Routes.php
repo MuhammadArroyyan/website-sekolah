@@ -58,4 +58,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     // Hapus Pasukan
     $routes->delete('taruna/delete/(:num)', 'Taruna::delete/$1');
+
+    // Manajemen Perwira
+    $routes->get('guru', 'Guru::index');
+    $routes->post('guru/store', 'Guru::store');
+    $routes->delete('guru/delete/(:num)', 'Guru::delete/$1');
 });

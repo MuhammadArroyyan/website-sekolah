@@ -38,12 +38,11 @@ class Auth extends BaseController
                 session()->set($sessionData);
 
                 // 4. LOGIKA PENGARAHAN (TRAFFIC CONTROL)
-                if ($user->role == 'komandan' || $user->role == 'admin') {
-                    // Komandan masuk ke Markas Pusat
-                    return redirect()->to('/dashboard');
+                // LOGIKA PENGARAHAN
+                if ($user->role == 'komandan' || $user->role == 'admin' || $user->role == 'ustadz') {
+                    return redirect()->to('/dashboard'); // Guru & Admin ke Dashboard
                 } else {
-                    // Taruna masuk ke Halaman Pribadi
-                    return redirect()->to('/my-dossier');
+                    return redirect()->to('/my-dossier'); // Taruna ke Dossier
                 }
             } else {
                 return redirect()->back()->with('error', 'ACCESS DENIED: Invalid Password.');
@@ -96,6 +95,13 @@ class Auth extends BaseController
             'updated_at'    => date('Y-m-d H:i:s')
         ]);
 
-        return redirect()->to('/dashboard')->with('success', 'Password berhasil diperbarui. Akun Anda aman.');
+        // TENTUKAN TUJUAN
+        $role = session()->get('role');
+        
+        if ($role == 'komandan' || $role == 'admin' || $role == 'ustadz') {
+            return redirect()->to('/dashboard')->with('success', 'Password diperbarui.');
+        } else {
+            return redirect()->to('/my-dossier')->with('success', 'Password diperbarui.');
+        }
     }
 }

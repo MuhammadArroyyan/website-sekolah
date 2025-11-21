@@ -51,14 +51,17 @@
             
             <?php 
                 $uri = uri_string();
-                $role = session()->get('role'); // Ambil role user
+                $role = session()->get('role'); 
                 
-                // Style Definitions
                 $active   = 'bg-radar/10 text-radar border-l-4 border-radar font-bold shadow-[0_0_10px_rgba(6,182,212,0.1)]';
                 $inactive = 'text-slate-400 hover:bg-slate-700 hover:text-white transition border-l-4 border-transparent';
+                
+                // GRUP AKSES
+                $isStaff = ($role == 'komandan' || $role == 'admin' || $role == 'ustadz'); // Admin + Guru
+                $isSuperAdmin = ($role == 'komandan' || $role == 'admin'); // Hanya Admin
             ?>
 
-            <?php if($role == 'komandan' || $role == 'admin'): ?>
+            <?php if($isStaff): ?>
                 
                 <a href="/dashboard" class="block p-3 rounded <?= str_contains($uri, 'dashboard') ? $active : $inactive ?>">
                     <span class="flex items-center gap-3">
@@ -76,6 +79,11 @@
                     </span>
                 </a>
 
+            <?php endif; ?>
+
+
+            <?php if($isSuperAdmin): ?>
+                
                 <a href="/taruna/create" class="block p-3 rounded <?= str_contains($uri, 'taruna/create') ? $active : $inactive ?>">
                     <span class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
@@ -90,20 +98,26 @@
                     </span>
                 </a>
 
+                <div class="pt-2 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest font-bold">Super Admin</div>
+
+                <a href="/guru" class="block p-3 rounded <?= str_contains($uri, 'guru') ? $active : $inactive ?>">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        Manajemen Perwira
+                    </span>
+                </a>
+
             <?php endif; ?>
 
 
             <?php if($role == 'taruna'): ?>
-                
                 <a href="/my-dossier" class="block p-3 rounded <?= str_contains($uri, 'my-dossier') ? $active : $inactive ?>">
                     <span class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         My Dossier
                     </span>
                 </a>
-
             <?php endif; ?>
-
 
             <div class="pt-4 pb-1 pl-3 text-[10px] text-slate-600 font-mono uppercase tracking-widest font-bold">Stats Center</div>
 
@@ -113,12 +127,14 @@
                     Leaderboard
                 </span>
             </a>
+            
             <a href="/change-password" class="block p-3 rounded <?= str_contains($uri, 'change-password') ? $active : $inactive ?>">
                 <span class="flex items-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     Ganti Password
                 </span>
             </a>
+            
         </nav>
 
         <div class="p-4 border-t border-slate-700">

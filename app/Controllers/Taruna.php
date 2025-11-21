@@ -96,6 +96,9 @@ class Taruna extends BaseController
     }
     public function create()
     {
+        if (session()->get('role') != 'komandan' && session()->get('role') != 'admin') {
+            return redirect()->back()->with('error', 'AKSES DITOLAK: Hanya Komandan yang berhak merekrut.');
+        }
         $db = \Config\Database::connect();
         $data = [
             'title'   => 'Rekrut Taruna Baru',
@@ -107,6 +110,9 @@ class Taruna extends BaseController
     // PROSES SIMPAN (USER + PROFILE)
     public function store()
     {
+        if (session()->get('role') != 'komandan' && session()->get('role') != 'admin') {
+            return redirect()->back()->with('error', 'AKSES DITOLAK.');
+        }
         $tarunaModel = new TarunaModel();
         $db = \Config\Database::connect();
 

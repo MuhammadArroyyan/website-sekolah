@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                <?php if(session()->get('role') == 'komandan' || session()->get('role') == 'admin'): ?>
+                <?php if(session()->get('role') != 'taruna'): ?>
                     <div class="space-y-2 mt-auto">
                         <a href="/taruna/print/<?= $taruna->id ?>" target="_blank" class="block w-full text-center py-2 bg-radar/10 border border-radar text-radar hover:bg-radar hover:text-black transition font-mono text-xs uppercase tracking-widest font-bold">
                             PRINT ID CARD
@@ -174,7 +174,7 @@
                             <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-wider">TYPE: <?= $log->type ?></p>
                         </div>
 
-                        <?php if(session()->get('role') == 'komandan' || session()->get('role') == 'admin'): ?>
+                        <?php if(session()->get('role') != 'taruna'): ?>
                             <form action="/discipline/delete/<?= $log->id ?>" method="post" onsubmit="return confirm('Yakin hapus log ini? Poin akan dikembalikan.')" class="absolute top-2 right-2">
                                 <?= csrf_field() ?>
                                 <button type="submit" class="text-slate-600 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded transition" title="Hapus Log">

@@ -4,28 +4,34 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\TarunaModel;
+use App\Models\DisciplineModel; // Tambahkan Model Log
 
 class Dashboard extends BaseController
 {
     public function index()
     {
+        if (session()->get('role') == 'taruna') {
+            return redirect()->to('/my-dossier');
+        }
+        
         $tarunaModel = new TarunaModel();
+        $logModel    = new DisciplineModel();
 
-        // Mengambil data statistik untuk "Heads-Up Display"
+        // 1. Ambil Log Terbaru (Join dengan nama Taruna)
+        // Kita ambil 3 aktivitas terakhir dari tabel discipline_logs
+        $recentLogs = $logModel->select('discipline_logs.*, taruna.full_name')
+                               ->join('taruna', 'taruna.id = discipline_logs.taruna_id')
+                               ->orderBy('discipline_logs.created_at', 'DESC')
+                               ->findAll(3);
+
         $data = [
-            'title'       => 'Command Center',
-            'total_taruna'=> $tarunaModel->countAllResults(),
-            'top_taruna'  => $tarunaModel->orderBy('total_points', 'DESC')->first(),
+            'title'           => 'Command Center',
+            'total_taruna'    => $tarunaModel->countAllResults(),
+            'top_taruna'      => $tarunaModel->orderBy('total_points', 'DESC')->first(),
+            'elites'          => $tarunaModel->orderBy('total_points', 'DESC')->findAll(5),
             
-            // Mengambil 5 Taruna dengan Pangkat Tertinggi untuk Leaderboard
-            'elites'      => $tarunaModel->orderBy('total_points', 'DESC')->findAll(5),
-            
-            // Mengambil Data Terbaru (Dummy logic untuk contoh)
-            'recent_activity' => [
-                ['time' => '08:00', 'event' => 'Apel Pagi - Kompi Alpha Lengkap', 'type' => 'info'],
-                ['time' => '09:15', 'event' => 'Pelanggaran - Terlambat Masuk Kelas', 'type' => 'alert'],
-                ['time' => '10:30', 'event' => 'Setoran Hafalan - Jus 30 Selesai', 'type' => 'success'],
-            ]
+            // Kirim data log asli ke View
+            'recent_activity' => $recentLogs 
         ];
 
         return view('dashboard/overview', $data);

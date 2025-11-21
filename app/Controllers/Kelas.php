@@ -6,6 +6,16 @@ use App\Controllers\BaseController;
 
 class Kelas extends BaseController
 {
+    public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
+    {
+        parent::initController($request, $response, $logger);
+        
+        // Jika Role BUKAN Komandan/Admin, tendang keluar
+        $role = session()->get('role');
+        if ($role != 'komandan' && $role != 'admin') {
+        }
+    }
+    
     public function index()
     {
         $db = \Config\Database::connect();
